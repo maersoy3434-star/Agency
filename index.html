@@ -299,7 +299,7 @@ async function fetchNews() {
 
   for (const src of RSS_SOURCES) {
     try {
-      const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(src.url)}`;
+      const proxy = `https://corsproxy.io/?${encodeURIComponent(src.url)}`;
       const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
       const text = await res.text();
       const parser = new DOMParser();
