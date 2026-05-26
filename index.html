@@ -3,149 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>İSTİHBARAT</title>
+<title>Agency</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #020204;
-  --s1: #05050a;
-  --card: #0a0a12;
-  --border: #1a1a2e;
-  --red: #ff2020;
-  --green: #00ff88;
-  --yellow: #ffcc00;
-  --blue: #0088ff;
-  --purple: #aa44ff;
-  --text: #e0e0f0;
-  --muted: #404060;
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html, body { height:100%; overflow:hidden; }
-body { background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; display:flex; flex-direction:column; }
-body::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px); pointer-events:none; z-index:1000; }
-body::after { content:''; position:fixed; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--green),transparent); opacity:0.2; animation:scan 5s linear infinite; z-index:999; pointer-events:none; }
-@keyframes scan { from{top:-2px} to{top:100vh} }
-.grid-bg { position:fixed; inset:0; background-image:linear-gradient(rgba(0,255,136,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.02) 1px,transparent 1px); background-size:50px 50px; pointer-events:none; z-index:0; }
-
-header { position:relative; z-index:10; background:rgba(2,2,4,0.97); border-bottom:1px solid var(--border); flex-shrink:0; }
-.header-top { display:flex; align-items:center; justify-content:space-between; padding:10px 14px 8px; }
-.logo { font-family:'Orbitron',monospace; font-size:14px; font-weight:900; letter-spacing:3px; color:var(--green); text-shadow:0 0 20px rgba(0,255,136,0.4); }
-.logo-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:2px; }
-.header-right { display:flex; align-items:center; gap:10px; }
-.live-dot { display:flex; align-items:center; gap:4px; font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--green); }
-.pulse { width:5px; height:5px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); animation:blink 1s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-.clock { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); }
-
-.market-band { background:rgba(0,255,136,0.04); border-bottom:1px solid rgba(0,255,136,0.1); overflow:hidden; padding:5px 0; }
-.market-scroll { display:flex; white-space:nowrap; animation:mscroll 25s linear infinite; }
-@keyframes mscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.market-item { display:inline-flex; align-items:center; gap:6px; padding:0 16px; font-family:'Share Tech Mono',monospace; font-size:10px; border-right:1px solid var(--border); }
-.m-label { color:var(--muted); }
-.m-val { color:var(--text); font-weight:600; }
-.m-up { color:var(--green); }
-.m-down { color:var(--red); }
-
-.ticker { background:rgba(255,32,32,0.06); border-bottom:1px solid rgba(255,32,32,0.15); overflow:hidden; padding:4px 0; }
-.ticker-inner { display:flex; white-space:nowrap; animation:ticker 35s linear infinite; }
-@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.ticker-tag { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--red); background:rgba(255,32,32,0.15); padding:1px 8px; letter-spacing:2px; flex-shrink:0; }
-.ticker-text { font-family:'Share Tech Mono',monospace; font-size:9px; color:rgba(224,224,240,0.7); padding:0 8px; }
-
-.tabs { display:flex; border-bottom:1px solid var(--border); background:var(--bg); }
-.tab { flex:1; padding:8px 4px; text-align:center; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; }
-.tab.active { color:var(--green); border-bottom-color:var(--green); }
-
-.main { flex:1; overflow-y:auto; overflow-x:hidden; position:relative; z-index:5; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
-.tab-page { display:none; padding:10px 14px 90px; }
-.tab-page.active { display:block; }
-
-.section-label { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
-
-.loading-state { display:flex; flex-direction:column; align-items:center; gap:12px; padding:40px 0; }
-.loading-txt { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--green); letter-spacing:2px; animation:blink 0.8s infinite; }
-.loading-bar { width:180px; height:2px; background:var(--border); border-radius:1px; overflow:hidden; }
-.loading-fill { height:100%; background:var(--green); box-shadow:0 0 8px var(--green); animation:lfill 1.5s ease-in-out infinite; }
-@keyframes lfill { 0%{width:0} 100%{width:100%} }
-
-.error-state { padding:20px; text-align:center; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--red); border:1px solid rgba(255,32,32,0.2); border-radius:2px; line-height:1.8; }
-
-.news-card { background:var(--card); border:1px solid var(--border); border-radius:2px; padding:12px; margin-bottom:8px; cursor:pointer; transition:all .2s; position:relative; overflow:hidden; animation:fadeUp .4s ease both; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.news-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--green); }
-.news-card.red::before { background:var(--red); box-shadow:0 0 8px var(--red); }
-.news-card.yellow::before { background:var(--yellow); }
-.news-card.blue::before { background:var(--blue); }
-.news-card:active { border-color:var(--green); background:rgba(0,255,136,0.03); transform:scale(0.99); }
-
-.card-top { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
-.card-src { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; }
-.card-time { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); margin-left:auto; }
-.card-badge { font-family:'Share Tech Mono',monospace; font-size:8px; padding:1px 6px; border-radius:1px; letter-spacing:1px; }
-.badge-red { background:rgba(255,32,32,0.15); color:var(--red); border:1px solid rgba(255,32,32,0.3); }
-.badge-blue { background:rgba(0,136,255,0.15); color:var(--blue); border:1px solid rgba(0,136,255,0.3); }
-.badge-green { background:rgba(0,255,136,0.1); color:var(--green); border:1px solid rgba(0,255,136,0.2); }
-.badge-yellow { background:rgba(255,204,0,0.15); color:var(--yellow); border:1px solid rgba(255,204,0,0.3); }
-
-.card-title { font-size:14px; font-weight:700; line-height:1.3; margin-bottom:5px; }
-.card-desc { font-size:12px; color:rgba(224,224,240,0.55); line-height:1.5; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.card-footer { display:flex; align-items:center; justify-content:space-between; }
-.analyze-btn { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--green); letter-spacing:1px; }
-
-.market-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
-.market-card { background:var(--card); border:1px solid var(--border); border-radius:2px; padding:12px; position:relative; overflow:hidden; }
-.market-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
-.market-card.gc::before { background:var(--green); box-shadow:0 0 8px var(--green); }
-.market-card.rc::before { background:var(--red); }
-.market-card.yc::before { background:var(--yellow); }
-.market-card.bc::before { background:var(--blue); }
-.mc-label { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }
-.mc-val { font-family:'Orbitron',monospace; font-size:16px; font-weight:700; margin-bottom:2px; }
-.mc-change { font-family:'Share Tech Mono',monospace; font-size:10px; }
-.mc-change.up { color:var(--green); }
-.mc-change.down { color:var(--red); }
-.mc-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); margin-top:2px; }
-
-.saved-empty { text-align:center; padding:40px 20px; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:1px; line-height:2; }
-
-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(2,2,4,0.98); border-top:1px solid var(--border); display:flex; padding:8px 0 20px; z-index:100; }
-.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px; cursor:pointer; }
-.nav-ico { font-size:18px; transition:transform .15s; }
-.nav-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; }
-.nav-btn.active .nav-lbl { color:var(--green); }
-.nav-btn.active .nav-ico { transform:scale(1.1); }
-
-.panel { position:fixed; bottom:-100%; left:0; right:0; background:var(--s1); border-top:2px solid var(--green); padding:16px 16px 100px; z-index:200; transition:bottom .4s cubic-bezier(.4,0,.2,1); max-height:90vh; overflow-y:auto; scrollbar-width:thin; }
-.panel.open { bottom:0; }
-.p-handle { width:40px; height:3px; background:var(--green); box-shadow:0 0 10px var(--green); margin:0 auto 16px; cursor:pointer; }
-.p-news-title { font-size:16px; font-weight:700; line-height:1.3; border-left:3px solid var(--green); padding-left:10px; margin-bottom:4px; }
-.p-meta { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); padding-left:13px; letter-spacing:1px; margin-bottom:16px; }
-
-.a-loading { display:flex; flex-direction:column; align-items:center; gap:10px; padding:30px 0; }
-.a-loading-txt { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--green); letter-spacing:2px; }
-.a-loading-bar { width:200px; height:2px; background:var(--border); border-radius:1px; overflow:hidden; }
-.a-loading-fill { height:100%; background:var(--green); box-shadow:0 0 8px var(--green); transition:width 2.5s ease; }
-.a-status { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:1px; }
-
-.a-content { display:none; }
-.a-content.show { display:block; }
-.a-section { margin-bottom:12px; border:1px solid var(--border); border-radius:2px; overflow:hidden; }
-.a-sec-header { display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(0,255,136,0.04); border-bottom:1px solid var(--border); }
-.a-sec-icon { font-size:13px; }
-.a-sec-title { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; }
-.a-sec-title.green { color:var(--green); }
-.a-sec-title.blue { color:var(--blue); }
-.a-sec-title.yellow { color:var(--yellow); }
-.a-sec-title.red { color:var(--red); }
-.a-sec-title.purple { color:var(--purple); }
-.a-sec-body { padding:12px; font-size:13px; line-height:1.7; color:rgba(224,224,240,0.8); }
-.a-sec-body p { margin-bottom:8px; }
-.a-sec-body p:last-child { margin-bottom:0; }
-.obj-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--green); border-radius:2px; font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--green); letter-spacing:1px; margin-top:8px; }
-
-.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:150; opacity:0; pointer-events:none; transition:opacity .3s; }
-.overlay.show { opacity:1; pointer-events:all; }
+:root{--bg:#020204;--s1:#05050a;--card:#0a0a12;--border:#1a1a2e;--red:#ff2020;--green:#00ff88;--yellow:#ffcc00;--blue:#0088ff;--purple:#aa44ff;--text:#e0e0f0;--muted:#404060}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:1000}
+body::after{content:'';position:fixed;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0.2;animation:scan 5s linear infinite;z-index:999;pointer-events:none}
+@keyframes scan{from{top:-2px}to{top:100vh}}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.02) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+header{position:relative;z-index:10;background:rgba(2,2,4,0.97);border-bottom:1px solid var(--border);flex-shrink:0}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
+.logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;letter-spacing:3px;color:var(--green);text-shadow:0 0 20px rgba(0,255,136,0.4)}
+.logo-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:2px}
+.header-right{display:flex;align-items:center;gap:10px}
+.live-dot{display:flex;align-items:center;gap:4px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green)}
+.pulse{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.clock{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted)}
+.market-band{background:rgba(0,255,136,0.04);border-bottom:1px solid rgba(0,255,136,0.1);overflow:hidden;padding:5px 0}
+.market-scroll{display:flex;white-space:nowrap;animation:mscroll 25s linear infinite}
+@keyframes mscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.market-item{display:inline-flex;align-items:center;gap:6px;padding:0 16px;font-family:'Share Tech Mono',monospace;font-size:10px;border-right:1px solid var(--border)}
+.m-label{color:var(--muted)}.m-val{color:var(--text);font-weight:600}.m-up{color:var(--green)}.m-down{color:var(--red)}
+.ticker{background:rgba(255,32,32,0.06);border-bottom:1px solid rgba(255,32,32,0.15);overflow:hidden;padding:4px 0}
+.ticker-inner{display:flex;white-space:nowrap;animation:ticker 35s linear infinite}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-tag{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--red);background:rgba(255,32,32,0.15);padding:1px 8px;letter-spacing:2px;flex-shrink:0}
+.ticker-text{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(224,224,240,0.7);padding:0 8px}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg)}
+.tab{flex:1;padding:8px 4px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:5;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.tab-page{display:none;padding:10px 14px 90px}.tab-page.active{display:block}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.loading-state{display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px 0}
+.loading-txt{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);letter-spacing:2px;animation:blink 0.8s infinite}
+.loading-bar{width:180px;height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.loading-fill{height:100%;background:var(--green);box-shadow:0 0 8px var(--green);animation:lfill 1.5s ease-in-out infinite}
+@keyframes lfill{0%{width:0}100%{width:100%}}
+.error-state{padding:20px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--red);border:1px solid rgba(255,32,32,0.2);border-radius:2px;line-height:1.8}
+.news-card{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.news-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green)}
+.news-card.red::before{background:var(--red);box-shadow:0 0 8px var(--red)}
+.news-card.yellow::before{background:var(--yellow)}
+.news-card.blue::before{background:var(--blue)}
+.news-card:active{border-color:var(--green);background:rgba(0,255,136,0.03);transform:scale(0.99)}
+.card-top{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.card-src{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px}
+.card-time{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-left:auto}
+.card-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 6px;border-radius:1px;letter-spacing:1px}
+.badge-red{background:rgba(255,32,32,0.15);color:var(--red);border:1px solid rgba(255,32,32,0.3)}
+.badge-blue{background:rgba(0,136,255,0.15);color:var(--blue);border:1px solid rgba(0,136,255,0.3)}
+.badge-green{background:rgba(0,255,136,0.1);color:var(--green);border:1px solid rgba(0,255,136,0.2)}
+.badge-yellow{background:rgba(255,204,0,0.15);color:var(--yellow);border:1px solid rgba(255,204,0,0.3)}
+.card-title{font-size:14px;font-weight:700;line-height:1.3;margin-bottom:5px}
+.card-desc{font-size:12px;color:rgba(224,224,240,0.55);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.analyze-btn{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);letter-spacing:1px}
+.market-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.market-card{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:12px;position:relative;overflow:hidden}
+.market-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.market-card.gc::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.market-card.rc::before{background:var(--red)}
+.market-card.yc::before{background:var(--yellow)}
+.market-card.bc::before{background:var(--blue)}
+.mc-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:4px}
+.mc-val{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;margin-bottom:2px}
+.mc-change{font-family:'Share Tech Mono',monospace;font-size:10px}
+.mc-change.up{color:var(--green)}.mc-change.down{color:var(--red)}
+.mc-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px}
+.saved-empty{text-align:center;padding:40px 20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;line-height:2}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(2,2,4,0.98);border-top:1px solid var(--border);display:flex;padding:8px 0 20px;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;cursor:pointer}
+.nav-ico{font-size:18px;transition:transform .15s}
+.nav-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px}
+.nav-btn.active .nav-lbl{color:var(--green)}.nav-btn.active .nav-ico{transform:scale(1.1)}
+.panel{position:fixed;bottom:-100%;left:0;right:0;background:var(--s1);border-top:2px solid var(--green);padding:16px 16px 100px;z-index:200;transition:bottom .4s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;scrollbar-width:thin}
+.panel.open{bottom:0}
+.p-handle{width:40px;height:3px;background:var(--green);box-shadow:0 0 10px var(--green);margin:0 auto 16px;cursor:pointer}
+.p-news-title{font-size:16px;font-weight:700;line-height:1.3;border-left:3px solid var(--green);padding-left:10px;margin-bottom:4px}
+.p-meta{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);padding-left:13px;letter-spacing:1px;margin-bottom:16px}
+.a-loading{display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px 0}
+.a-loading-txt{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:2px}
+.a-loading-bar{width:200px;height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.a-loading-fill{height:100%;background:var(--green);box-shadow:0 0 8px var(--green);transition:width 2.5s ease}
+.a-status{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px}
+.a-content{display:none}.a-content.show{display:block}
+.a-section{margin-bottom:12px;border:1px solid var(--border);border-radius:2px;overflow:hidden}
+.a-sec-header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(0,255,136,0.04);border-bottom:1px solid var(--border)}
+.a-sec-icon{font-size:13px}
+.a-sec-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px}
+.a-sec-title.green{color:var(--green)}.a-sec-title.blue{color:var(--blue)}.a-sec-title.yellow{color:var(--yellow)}.a-sec-title.red{color:var(--red)}.a-sec-title.purple{color:var(--purple)}
+.a-sec-body{padding:12px;font-size:13px;line-height:1.7;color:rgba(224,224,240,0.8)}
+.a-sec-body p{margin-bottom:8px}.a-sec-body p:last-child{margin-bottom:0}
+.obj-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--green);border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--green);letter-spacing:1px;margin-top:8px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.show{opacity:1;pointer-events:all}
 </style>
 </head>
 <body>
@@ -153,6 +111,7 @@ nav { position:fixed; bottom:0; left:0; right:0; background:rgba(2,2,4,0.98); bo
 
 <script>
 const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
+const GNEWS_API_KEY = "41e10c3cc8b73ac76711873f3e08e6b9";
 </script>
 
 <header>
@@ -166,9 +125,8 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
       <div class="clock" id="clock">--:--:--</div>
     </div>
   </div>
-
   <div class="market-band">
-    <div class="market-scroll" id="mScroll">
+    <div class="market-scroll">
       <span class="market-item"><span class="m-label">USD/TRY</span><span class="m-val" id="b-usd">--</span><span id="b-usd-c" class="m-up"></span></span>
       <span class="market-item"><span class="m-label">EUR/TRY</span><span class="m-val" id="b-eur">--</span><span id="b-eur-c" class="m-up"></span></span>
       <span class="market-item"><span class="m-label">ALTIN</span><span class="m-val" id="b-gold">--</span><span class="m-up">▲</span></span>
@@ -181,7 +139,6 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
       <span class="market-item"><span class="m-label">ETH</span><span class="m-val" id="b-eth2">--</span></span>
     </div>
   </div>
-
   <div class="ticker">
     <div class="ticker-inner">
       <span class="ticker-tag">⚡ SON DAKİKA</span>
@@ -190,7 +147,6 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
       <span class="ticker-text" id="t2">Haberler yükleniyor...</span>
     </div>
   </div>
-
   <div class="tabs">
     <div class="tab active" onclick="switchTab('haberler',this)">📰 HABERLER</div>
     <div class="tab" onclick="switchTab('piyasalar',this)">📊 PİYASALAR</div>
@@ -208,13 +164,12 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
       </div>
     </div>
   </div>
-
   <div class="tab-page" id="page-piyasalar">
     <div class="section-label" style="margin-top:10px">DÖVİZ & EMTİA</div>
     <div class="market-grid">
       <div class="market-card gc"><div class="mc-label">USD / TRY</div><div class="mc-val" id="p-usd">--</div><div class="mc-change up" id="p-usd-c">--</div><div class="mc-sub">Amerikan Doları</div></div>
       <div class="market-card bc"><div class="mc-label">EUR / TRY</div><div class="mc-val" id="p-eur">--</div><div class="mc-change up" id="p-eur-c">--</div><div class="mc-sub">Euro</div></div>
-      <div class="market-card yc"><div class="mc-label">ALTIN / OZ</div><div class="mc-val" id="p-gold">--</div><div class="mc-change up">▲ YUKARI</div><div class="mc-sub">Ons Altın (USD)</div></div>
+      <div class="market-card yc"><div class="mc-label">ALTIN / OZ</div><div class="mc-val" id="p-gold">--</div><div class="mc-change up">▲ YÜKSELİYOR</div><div class="mc-sub">Ons Altın (USD)</div></div>
       <div class="market-card rc"><div class="mc-label">BITCOIN</div><div class="mc-val" id="p-btc">--</div><div class="mc-change up" id="p-btc-c">--</div><div class="mc-sub">BTC / USD</div></div>
     </div>
     <div class="section-label">KRİPTO PARA</div>
@@ -223,7 +178,6 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
       <div class="market-card bc"><div class="mc-label">BNB</div><div class="mc-val" id="p-bnb">--</div><div class="mc-change up" id="p-bnb-c">--</div><div class="mc-sub">BNB / USD</div></div>
     </div>
   </div>
-
   <div class="tab-page" id="page-kaydedilenler">
     <div class="section-label" style="margin-top:10px">KAYDEDİLEN HABERLER</div>
     <div id="savedContainer"><div class="saved-empty">[ KAYITLI HABER YOK ]<br><br>Haberlerde 🔖 ikonuna basarak kaydet</div></div>
@@ -256,207 +210,94 @@ const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
 </div>
 
 <script>
-// CLOCK
-setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }, 1000);
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})},1000);
 
-// SAVED
-let saved = JSON.parse(localStorage.getItem('sN') || '[]');
+let saved=JSON.parse(localStorage.getItem('sN')||'[]');
 
-function toggleSave(e, a) {
-  e.stopPropagation();
-  const idx = saved.findIndex(s => s.title === a.title);
-  if (idx > -1) { saved.splice(idx,1); e.target.textContent='🔖'; }
-  else { saved.push(a); e.target.textContent='📌'; }
-  localStorage.setItem('sN', JSON.stringify(saved));
-  renderSaved();
-}
+function toggleSave(e,a){e.stopPropagation();const idx=saved.findIndex(s=>s.title===a.title);if(idx>-1){saved.splice(idx,1);e.target.textContent='🔖';}else{saved.push(a);e.target.textContent='📌';}localStorage.setItem('sN',JSON.stringify(saved));renderSaved();}
 
-function renderSaved() {
-  const c = document.getElementById('savedContainer');
-  if (!saved.length) { c.innerHTML='<div class="saved-empty">[ KAYITLI HABER YOK ]<br><br>Haberlerde 🔖 ikonuna basarak kaydet</div>'; return; }
-  c.innerHTML = '';
-  saved.forEach(a => {
-    const el = document.createElement('div');
-    el.className = 'news-card';
-    el.innerHTML = `<div class="card-top"><span class="card-src">${a.src||'KAYNAK'}</span><span class="card-time">KAYDEDİLDİ</span></div><div class="card-title">${a.title}</div><div class="analyze-btn">▶ ANALİZ ET</div>`;
-    el.onclick = () => openPanel(a);
-    c.appendChild(el);
-  });
-}
+function renderSaved(){const c=document.getElementById('savedContainer');if(!saved.length){c.innerHTML='<div class="saved-empty">[ KAYITLI HABER YOK ]<br><br>Haberlerde 🔖 ikonuna basarak kaydet</div>';return;}c.innerHTML='';saved.forEach(a=>{const el=document.createElement('div');el.className='news-card';el.innerHTML=`<div class="card-top"><span class="card-src">${a.src||'KAYNAK'}</span><span class="card-time">KAYDEDİLDİ</span></div><div class="card-title">${a.title}</div><div class="analyze-btn">▶ ANALİZ ET</div>`;el.onclick=()=>openPanel(a);c.appendChild(el);});}
 
-// NEWS - Multiple RSS sources
-const RSS_SOURCES = [
-  { url: 'https://feeds.bbci.co.uk/turkce/rss.xml', name: 'BBC TÜRKÇE' },
-  { url: 'https://www.aa.com.tr/tr/rss/default?cat=guncel', name: 'ANADOLU AJANSI' },
-  { url: 'https://tr.euronews.com/rss?format=mrss&level=theme&name=news', name: 'EURONEWS TR' },
-];
-
-let allNews = [];
-
-async function fetchNews() {
-  const container = document.getElementById('newsContainer');
-  let articles = [];
-
-  for (const src of RSS_SOURCES) {
-    try {
-      const proxy = `https://corsproxy.io/?${encodeURIComponent(src.url)}`;
-      const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-      const text = await res.text();
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(text, 'text/xml');
-      const items = xml.querySelectorAll('item');
-
-      Array.from(items).slice(0, 8).forEach(item => {
-        const title = item.querySelector('title')?.textContent?.replace(/<!\[CDATA\[|\]\]>/g,'').trim();
-        const desc = item.querySelector('description')?.textContent?.replace(/<[^>]*>/g,'').replace(/<!\[CDATA\[|\]\]>/g,'').trim();
-        const link = item.querySelector('link')?.textContent?.trim();
-        const pubDate = item.querySelector('pubDate')?.textContent;
-        if (title && title.length > 10) {
-          articles.push({ title, desc, link, pubDate, src: src.name });
-        }
-      });
-
-      if (articles.length > 5) break; // Yeterli haber varsa dur
-    } catch(e) { continue; }
-  }
-
-  if (articles.length === 0) {
-    // Fallback - demo haberler
-    articles = [
-      { title: 'Merkez Bankası Faiz Kararını Açıkladı', desc: 'TCMB olağanüstü toplantısında faiz oranını 250 baz puan artırdı.', src: 'DEMO', pubDate: new Date().toISOString() },
-      { title: 'NATO\'dan Kritik Açıklama', desc: 'NATO Genel Sekreteri savunma harcamalarının artırılması gerektiğini açıkladı.', src: 'DEMO', pubDate: new Date().toISOString() },
-      { title: 'Yapay Zeka Düzenlemeleri için Küresel Zirve', desc: '47 ülke askeri yapay zeka kullanımını sınırlandıran bildirge imzaladı.', src: 'DEMO', pubDate: new Date().toISOString() },
-      { title: 'Orta Doğu\'da Gerilim Tırmanıyor', desc: 'Bölgedeki son gelişmeler uluslararası kamuoyunda endişeyle izleniyor.', src: 'DEMO', pubDate: new Date().toISOString() },
-      { title: 'Çin Ekonomisinde Yavaşlama Sinyali', desc: 'GSYİH büyümesi analistlerin beklentilerinin altında kaldı.', src: 'DEMO', pubDate: new Date().toISOString() },
-    ];
-  }
-
-  allNews = articles;
-  renderNews(articles);
-
-  // Ticker güncelle
-  const titles = articles.slice(0,6).map(a=>a.title).join(' &nbsp;•&nbsp; ');
-  document.getElementById('t1').innerHTML = titles;
-  document.getElementById('t2').innerHTML = titles;
-}
-
-function timeDiff(d) {
-  if (!d) return 'GÜNCEL';
-  const mins = Math.floor((Date.now() - new Date(d)) / 60000);
-  if (mins < 1) return 'AZ ÖNCE';
-  if (mins < 60) return mins + ' DAK.';
-  const hrs = Math.floor(mins/60);
-  if (hrs < 24) return hrs + ' SAAT';
-  return Math.floor(hrs/24) + ' GÜN';
-}
-
-function renderNews(list) {
-  const c = document.getElementById('newsContainer');
-  c.innerHTML = '';
-  const colors = ['red','yellow','blue','','','',''];
-  const badges = [
-    '<span class="card-badge badge-red">⚡ ACİL</span>',
-    '<span class="card-badge badge-yellow">⚠ ÖNEMLİ</span>',
-    '<span class="card-badge badge-blue">◈ DÜNYA</span>',
-    '<span class="card-badge badge-green">◈ HABER</span>',
+async function fetchNews(){
+  const container=document.getElementById('newsContainer');
+  try{
+    // GNews API - direkt tarayıcıdan çalışır
+    const url=`https://gnews.io/api/v4/top-headlines?lang=tr&country=tr&max=10&apikey=${GNEWS_API_KEY}`;
+    const res=await fetch(url);
+    const data=await res.json();
+    if(data.articles&&data.articles.length>0){
+      const articles=data.articles.map(a=>({title:a.title,desc:a.description,link:a.url,pubDate:a.publishedAt,src:a.source?.name?.toUpperCase()||'GNEWS',img:a.image}));
+      renderNews(articles);
+      const titles=articles.slice(0,6).map(a=>a.title).join(' &nbsp;•&nbsp; ');
+      document.getElementById('t1').innerHTML=titles;
+      document.getElementById('t2').innerHTML=titles;
+      return;
+    }
+  }catch(e){}
+  
+  // Fallback - demo haberler
+  const demo=[
+    {title:'Merkez Bankası Faiz Kararını Açıkladı: Piyasalar Tepki Verdi',desc:'TCMB olağanüstü toplantısında faiz oranını 250 baz puan artırdı. Dolar/TL kuru sert hareketler yaşadı.',src:'DEMO',pubDate:new Date().toISOString()},
+    {title:"NATO'dan Kritik Açıklama: Savunma Harcamaları Artırılmalı",desc:"NATO Genel Sekreteri üye ülkelerin GSYİH'lerinin %3'ünü savunmaya ayırması gerektiğini açıkladı.",src:'DEMO',pubDate:new Date(Date.now()-3600000).toISOString()},
+    {title:'Yapay Zeka Düzenlemeleri İçin Küresel Zirve',desc:'47 ülke askeri yapay zeka kullanımını sınırlandıran tarihi bildirge imzaladı.',src:'DEMO',pubDate:new Date(Date.now()-7200000).toISOString()},
+    {title:"Orta Doğu'da Gerilim: İran Nükleer Tesislerinde Hareketlilik",desc:'Uydu görüntüleri kritik tesislerde beklenmedik faaliyetleri ortaya koydu.',src:'DEMO',pubDate:new Date(Date.now()-10800000).toISOString()},
+    {title:'Çin Ekonomisinde Yavaşlama Sinyali',desc:"GSYİH büyümesi analistlerin %5.1 beklentisinin çok altında %4.2 olarak gerçekleşti.",src:'DEMO',pubDate:new Date(Date.now()-14400000).toISOString()},
   ];
+  renderNews(demo);
+  const titles=demo.map(a=>a.title).join(' &nbsp;•&nbsp; ');
+  document.getElementById('t1').innerHTML=titles;
+  document.getElementById('t2').innerHTML=titles;
+}
 
-  list.forEach((a, i) => {
-    const isSaved = saved.some(s => s.title === a.title);
-    const el = document.createElement('div');
-    el.className = `news-card ${colors[i] || ''}`;
-    el.style.animationDelay = (i * 0.06) + 's';
-    el.innerHTML = `
-      <div class="card-top">${badges[Math.min(i,3)]}<span class="card-src">${a.src||''}</span><span class="card-time">${timeDiff(a.pubDate)}</span></div>
-      <div class="card-title">${a.title}</div>
-      ${a.desc ? `<div class="card-desc">${a.desc}</div>` : ''}
-      <div class="card-footer"><div class="analyze-btn">▶ ANALİZ ET</div><span class="save-btn" style="font-size:16px;cursor:pointer">${isSaved?'📌':'🔖'}</span></div>
-    `;
-    el.querySelector('.save-btn').addEventListener('click', e => toggleSave(e, a));
-    el.onclick = e => { if (!e.target.classList.contains('save-btn')) openPanel(a); };
+function timeDiff(d){if(!d)return'GÜNCEL';const mins=Math.floor((Date.now()-new Date(d))/60000);if(mins<1)return'AZ ÖNCE';if(mins<60)return mins+' DAK.';const hrs=Math.floor(mins/60);if(hrs<24)return hrs+' SAAT';return Math.floor(hrs/24)+' GÜN';}
+
+function renderNews(list){
+  const c=document.getElementById('newsContainer');c.innerHTML='';
+  const colors=['red','yellow','blue','','',''];
+  const badges=['<span class="card-badge badge-red">⚡ ACİL</span>','<span class="card-badge badge-yellow">⚠ ÖNEMLİ</span>','<span class="card-badge badge-blue">◈ DÜNYA</span>','<span class="card-badge badge-green">◈ HABER</span>'];
+  list.forEach((a,i)=>{
+    const isSaved=saved.some(s=>s.title===a.title);
+    const el=document.createElement('div');
+    el.className=`news-card ${colors[i]||''}`;
+    el.style.animationDelay=(i*0.06)+'s';
+    el.innerHTML=`<div class="card-top">${badges[Math.min(i,3)]}<span class="card-src">${a.src||''}</span><span class="card-time">${timeDiff(a.pubDate)}</span></div><div class="card-title">${a.title}</div>${a.desc?`<div class="card-desc">${a.desc}</div>`:''}<div class="card-footer"><div class="analyze-btn">▶ ANALİZ ET</div><span class="save-btn" style="font-size:16px;cursor:pointer">${isSaved?'📌':'🔖'}</span></div>`;
+    el.querySelector('.save-btn').addEventListener('click',e=>toggleSave(e,a));
+    el.onclick=e=>{if(!e.target.classList.contains('save-btn'))openPanel(a);};
     c.appendChild(el);
   });
 }
 
-// MARKETS
-async function fetchMarkets() {
-  try {
-    const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-    const d = await r.json();
-    const usd = d.rates.TRY?.toFixed(2);
-    const eur = (d.rates.TRY / d.rates.EUR)?.toFixed(2);
-    set('b-usd', usd); set('b-usd2', usd);
-    set('b-eur', eur); set('b-eur2', eur);
-    set('p-usd', usd); set('p-eur', eur);
-    document.getElementById('b-usd-c').textContent = '▲';
-    document.getElementById('b-eur-c').textContent = '▲';
-    document.getElementById('p-usd-c').textContent = '▲ +0.12%';
-    document.getElementById('p-eur-c').textContent = '▲ +0.08%';
-  } catch(e) {}
-
-  try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd&include_24hr_change=true');
-    const d = await r.json();
-    const btc = '$' + d.bitcoin?.usd?.toLocaleString('en');
-    const btcC = d.bitcoin?.usd_24h_change?.toFixed(2);
-    const eth = '$' + d.ethereum?.usd?.toLocaleString('en');
-    const ethC = d.ethereum?.usd_24h_change?.toFixed(2);
-    const bnb = '$' + d.binancecoin?.usd?.toLocaleString('en');
-    const bnbC = d.binancecoin?.usd_24h_change?.toFixed(2);
-
-    set('b-btc', btc); set('b-btc2', btc);
-    set('b-eth', eth); set('b-eth2', eth);
-    set('p-btc', btc); set('p-eth', eth); set('p-bnb', bnb);
-
-    setChange('b-btc-c', btcC);
-    setChange('b-eth-c', ethC);
-    setChange('p-btc-c', btcC);
-    setChange('p-eth-c', ethC);
-    setChange('p-bnb-c', bnbC);
-  } catch(e) {}
-
-  try {
-    const r = await fetch('https://api.metals.live/v1/spot/gold');
-    const d = await r.json();
-    const g = '$' + d[0]?.price?.toFixed(0);
-    set('b-gold', g); set('b-gold2', g); set('p-gold', g);
-  } catch(e) { set('b-gold','$2,350'); set('b-gold2','$2,350'); set('p-gold','$2,350'); }
+async function fetchMarkets(){
+  try{const r=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const d=await r.json();const usd=d.rates.TRY?.toFixed(2);const eur=(d.rates.TRY/d.rates.EUR)?.toFixed(2);set('b-usd',usd);set('b-usd2',usd);set('b-eur',eur);set('b-eur2',eur);set('p-usd',usd);set('p-eur',eur);document.getElementById('b-usd-c').textContent='▲';document.getElementById('b-eur-c').textContent='▲';document.getElementById('p-usd-c').textContent='▲ +0.12%';document.getElementById('p-eur-c').textContent='▲ +0.08%';}catch(e){}
+  try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd&include_24hr_change=true');const d=await r.json();const btc='$'+d.bitcoin?.usd?.toLocaleString('en');const btcC=d.bitcoin?.usd_24h_change?.toFixed(2);const eth='$'+d.ethereum?.usd?.toLocaleString('en');const ethC=d.ethereum?.usd_24h_change?.toFixed(2);const bnb='$'+d.binancecoin?.usd?.toLocaleString('en');const bnbC=d.binancecoin?.usd_24h_change?.toFixed(2);set('b-btc',btc);set('b-btc2',btc);set('b-eth',eth);set('b-eth2',eth);set('p-btc',btc);set('p-eth',eth);set('p-bnb',bnb);setChg('b-btc-c',btcC);setChg('b-eth-c',ethC);setChg('p-btc-c',btcC);setChg('p-eth-c',ethC);setChg('p-bnb-c',bnbC);}catch(e){}
+  try{const r=await fetch('https://api.metals.live/v1/spot/gold');const d=await r.json();const g='$'+d[0]?.price?.toFixed(0);set('b-gold',g);set('b-gold2',g);set('p-gold',g);}catch(e){set('b-gold','$2,350');set('b-gold2','$2,350');set('p-gold','$2,350');}
 }
 
-function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-function setChange(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const v = parseFloat(val);
-  el.textContent = `${v>=0?'▲':'▼'} ${Math.abs(v).toFixed(2)}%`;
-  el.className = `mc-change ${v>=0?'up':'down'}`;
-}
+function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+function setChg(id,val){const el=document.getElementById(id);if(!el)return;const v=parseFloat(val);el.textContent=`${v>=0?'▲':'▼'} ${Math.abs(v).toFixed(2)}%`;el.className=`mc-change ${v>=0?'up':'down'}`;}
 
-// PANEL
-function openPanel(a) {
-  document.getElementById('pTitle').textContent = a.title;
-  document.getElementById('pMeta').textContent = `${a.src||''} • ${timeDiff(a.pubDate)}`;
-  document.getElementById('aLoading').style.display = 'flex';
+function openPanel(a){
+  document.getElementById('pTitle').textContent=a.title;
+  document.getElementById('pMeta').textContent=`${a.src||''} • ${timeDiff(a.pubDate)}`;
+  document.getElementById('aLoading').style.display='flex';
   document.getElementById('aContent').classList.remove('show');
-  const fill = document.getElementById('aFill');
-  fill.style.width = '0';
-  setTimeout(() => { fill.style.width = '100%'; }, 100);
-  const statuses = ['VERİ İŞLENİYOR...','KAYNAKLAR TARANIYIR...','AI MODELİ ÇALIŞIYOR...','ANALİZ TAMAMLANDI ✓'];
-  let si = 0;
-  const sInt = setInterval(() => { document.getElementById('aStatus').textContent = statuses[si]||statuses[3]; si++; if(si>=statuses.length) clearInterval(sInt); }, 600);
+  const fill=document.getElementById('aFill');fill.style.width='0';
+  setTimeout(()=>{fill.style.width='100%';},100);
+  const statuses=['VERİ İŞLENİYOR...','KAYNAKLAR TARANIYIR...','AI MODELİ ÇALIŞIYOR...','ANALİZ TAMAMLANDI ✓'];
+  let si=0;const sInt=setInterval(()=>{document.getElementById('aStatus').textContent=statuses[si]||statuses[3];si++;if(si>=statuses.length)clearInterval(sInt);},600);
   document.getElementById('panel').classList.add('open');
   document.getElementById('overlay').classList.add('show');
   analyzeWithGemini(a);
 }
 
-async function analyzeWithGemini(a) {
-  const prompt = `Sen bir stratejik istihbarat analistinin yapay zeka asistanısın. Tamamen OBJEKTİF ve TARAFSIZ analiz yap. Hiçbir siyasi taraf tutma. Sadece olgular ve mantıksal çıkarımlar.
+async function analyzeWithGemini(a){
+  const prompt=`Sen bir stratejik istihbarat analistinin yapay zeka asistanısın. Tamamen OBJEKTİF ve TARAFSIZ analiz yap. Hiçbir siyasi taraf tutma.
 
 HABER: ${a.title}
 AÇIKLAMA: ${a.desc||''}
 KAYNAK: ${a.src||''}
 
-Şu formatta Türkçe yanıt ver (### başlıklarını kullan):
+Şu formatta Türkçe yanıt ver:
 
 ### STRATEJİK ANALİZ
 Bu haberin stratejik önemi. 2-3 paragraf.
@@ -472,67 +313,36 @@ Kısa/orta/uzun vade senaryolar ve olasılıklar.
 
 Tamamen Türkçe. Tarafsız. Gerçekçi.`;
 
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 1200 } })
-    });
-    const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!text) throw new Error('Yanıt yok');
-
-    const secs = text.split('###').filter(s => s.trim());
-    const p = {};
-    secs.forEach(s => { const lines = s.trim().split('\n'); p[lines[0].trim()] = lines.slice(1).join('\n').trim(); });
-
-    document.getElementById('aS1').innerHTML = fmt(p['STRATEJİK ANALİZ'] || text.substring(0,400));
-    document.getElementById('aS2').innerHTML = fmt(p['ÇIKMA SEBEBİ'] || '—');
-    document.getElementById('aS3').innerHTML = fmt(p['OLASI ETKİLER'] || '—');
-    document.getElementById('aS4').innerHTML = fmt(p['SENARYO TAHMİNİ'] || '—') + '<div class="obj-badge">✓ OBJEKTİF ANALİZ — TARAFSIZ DEĞERLENDİRME</div>';
-  } catch(err) {
-    document.getElementById('aS1').innerHTML = `<p>Gemini API key'i kontrol edin: ${err.message}</p>`;
-    ['aS2','aS3','aS4'].forEach(id => document.getElementById(id).innerHTML = '<p>—</p>');
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1200}})});
+    const data=await res.json();
+    const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!text)throw new Error('Yanıt yok');
+    const secs=text.split('###').filter(s=>s.trim());
+    const p={};secs.forEach(s=>{const lines=s.trim().split('\n');p[lines[0].trim()]=lines.slice(1).join('\n').trim();});
+    document.getElementById('aS1').innerHTML=fmt(p['STRATEJİK ANALİZ']||text.substring(0,400));
+    document.getElementById('aS2').innerHTML=fmt(p['ÇIKMA SEBEBİ']||'—');
+    document.getElementById('aS3').innerHTML=fmt(p['OLASI ETKİLER']||'—');
+    document.getElementById('aS4').innerHTML=fmt(p['SENARYO TAHMİNİ']||'—')+'<div class="obj-badge">✓ OBJEKTİF ANALİZ — TARAFSIZ DEĞERLENDİRME</div>';
+  }catch(err){
+    document.getElementById('aS1').innerHTML=`<p>⚠ Gemini API hatası: ${err.message}</p><p>API key'leri kontrol edin.</p>`;
+    ['aS2','aS3','aS4'].forEach(id=>document.getElementById(id).innerHTML='<p>—</p>');
   }
-
-  setTimeout(() => {
-    document.getElementById('aLoading').style.display = 'none';
-    document.getElementById('aContent').classList.add('show');
-  }, 2800);
+  setTimeout(()=>{document.getElementById('aLoading').style.display='none';document.getElementById('aContent').classList.add('show');},2800);
 }
 
-function fmt(text) {
-  if (!text) return '<p>—</p>';
-  return text.split('\n').filter(l => l.trim()).map(l => {
-    if (l.startsWith('- ') || l.startsWith('• ') || l.startsWith('* ')) return `<p>▸ ${l.substring(2).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;
-    return `<p>${l.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;
-  }).join('');
-}
+function fmt(text){if(!text)return'<p>—</p>';return text.split('\n').filter(l=>l.trim()).map(l=>{if(l.startsWith('- ')||l.startsWith('• ')||l.startsWith('* '))return`<p>▸ ${l.substring(2).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;return`<p>${l.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>`;}).join('');}
 
-function closePanel() {
-  document.getElementById('panel').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-}
+function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('page-' + name).classList.add('active');
-}
+function switchTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('page-'+name).classList.add('active');}
 
-function switchNav(btn, name) {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const map = {haberler:0, piyasalar:1, kaydedilenler:2};
-  document.querySelectorAll('.tab')[map[name]]?.click();
-}
+function switchNav(btn,name){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const map={haberler:0,piyasalar:1,kaydedilenler:2};document.querySelectorAll('.tab')[map[name]]?.click();}
 
-// INIT
 fetchNews();
 fetchMarkets();
-setInterval(fetchMarkets, 60000);
-setInterval(fetchNews, 300000);
+setInterval(fetchMarkets,60000);
+setInterval(fetchNews,300000);
 renderSaved();
 </script>
 </body>
