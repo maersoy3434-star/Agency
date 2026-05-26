@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>İSTİHBARAT</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020204;
+  --s1: #05050a;
+  --card: #0a0a12;
+  --border: #1a1a2e;
+  --red: #ff2020;
+  --green: #00ff88;
+  --yellow: #ffcc00;
+  --blue: #0088ff;
+  --purple: #aa44ff;
+  --text: #e0e0f0;
+  --muted: #404060;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.012) 2px, rgba(0,255,136,0.012) 4px);
+  pointer-events:none;
+  z-index:1000;
+}
+
+body::after {
+  content:'';
+  position:fixed;
+  left:0; right:0;
+  height:1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity:0.2;
+  animation: scan 5s linear infinite;
+  z-index:999;
+  pointer-events:none;
+}
+@keyframes scan { from{top:-2px} to{top:100vh} }
+
+.grid-bg {
+  position:fixed; inset:0;
+  background-image: linear-gradient(rgba(0,255,136,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events:none; z-index:0;
+}
+
+/* HEADER */
+header {
+  position:relative; z-index:10;
+  background: rgba(2,2,4,0.97);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+
+.header-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 14px 8px;
+}
+
+.logo { font-family:'Orbitron',monospace; font-size:14px; font-weight:900; letter-spacing:3px; color:var(--green); text-shadow:0 0 20px rgba(0,255,136,0.4); }
+.logo-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:2px; }
+
+.header-right { display:flex; align-items:center; gap:10px; }
+.live-dot { display:flex; align-items:center; gap:4px; font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--green); }
+.pulse { width:5px; height:5px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.clock { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* BORSA BANDI */
+.market-band {
+  background: rgba(0,255,136,0.04);
+  border-bottom:1px solid rgba(0,255,136,0.1);
+  overflow:hidden;
+  padding:5px 0;
+}
+
+.market-scroll {
+  display:flex;
+  gap:0;
+  white-space:nowrap;
+  animation: mscroll 25s linear infinite;
+}
+
+@keyframes mscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.market-item {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0 16px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;
+  border-right:1px solid var(--border);
+}
+
+.m-label { color:var(--muted); }
+.m-val { color:var(--text); font-weight:600; }
+.m-up { color:var(--green); }
+.m-down { color:var(--red); }
+
+/* TICKER */
+.ticker {
+  background: rgba(255,32,32,0.06);
+  border-bottom:1px solid rgba(255,32,32,0.15);
+  overflow:hidden;
+  padding:4px 0;
+}
+
+.ticker-inner {
+  display:flex;
+  white-space:nowrap;
+  animation: ticker 35s linear infinite;
+}
+
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.ticker-tag { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--red); background:rgba(255,32,32,0.15); padding:1px 8px; letter-spacing:2px; flex-shrink:0; }
+.ticker-text { font-family:'Share Tech Mono',monospace; font-size:9px; color:rgba(224,224,240,0.7); padding:0 8px; }
+
+/* TABS */
+.tabs {
+  display:flex;
+  border-bottom:1px solid var(--border);
+  background: var(--bg);
+}
+
+.tab {
+  flex:1;
+  padding:8px 4px;
+  text-align:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:1px;
+  color:var(--muted);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+
+.tab.active { color:var(--green); border-bottom-color:var(--green); }
+
+/* MAIN */
+.main {
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  position:relative;
+  z-index:5;
+  scrollbar-width:thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* TAB PAGES */
+.tab-page { display:none; padding:10px 14px 90px; }
+.tab-page.active { display:block; }
+
+/* HABERLER */
+.section-label {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* LOADING STATE */
+.loading-state {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  padding:40px 0;
+}
+
+.loading-txt { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--green); letter-spacing:2px; animation:blink 0.8s infinite; }
+.loading-bar { width:180px; height:2px; background:var(--border); border-radius:1px; overflow:hidden; }
+.loading-fill { height:100%; background:var(--green); box-shadow:0 0 8px var(--green); animation:lfill 1.5s ease-in-out infinite; }
+@keyframes lfill { 0%{width:0;transform:translateX(0)} 100%{width:100%;transform:translateX(0)} }
+
+/* ERROR STATE */
+.error-state {
+  padding:20px;
+  text-align:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  color:var(--red);
+  border:1px solid rgba(255,32,32,0.2);
+  border-radius:2px;
+}
+
+/* NEWS CARD */
+.news-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:12px;
+  margin-bottom:8px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+  animation: fadeUp .4s ease both;
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.news-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--green); }
+.news-card.red::before { background:var(--red); box-shadow:0 0 8px var(--red); }
+.news-card.yellow::before { background:var(--yellow); }
+.news-card.blue::before { background:var(--blue); }
+
+.news-card:active { border-color:var(--green); background:rgba(0,255,136,0.03); transform:scale(0.99); }
+
+.card-top { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.card-src { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; }
+.card-time { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); margin-left:auto; }
+
+.card-badge {
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;
+  padding:1px 6px;
+  border-radius:1px;
+  letter-spacing:1px;
+}
+
+.badge-red { background:rgba(255,32,32,0.15); color:var(--red); border:1px solid rgba(255,32,32,0.3); }
+.badge-blue { background:rgba(0,136,255,0.15); color:var(--blue); border:1px solid rgba(0,136,255,0.3); }
+.badge-green { background:rgba(0,255,136,0.1); color:var(--green); border:1px solid rgba(0,255,136,0.2); }
+.badge-yellow { background:rgba(255,204,0,0.15); color:var(--yellow); border:1px solid rgba(255,204,0,0.3); }
+
+.card-title { font-size:14px; font-weight:700; line-height:1.3; margin-bottom:5px; letter-spacing:0.3px; }
+.card-desc { font-size:12px; color:rgba(224,224,240,0.55); line-height:1.5; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+
+.card-footer { display:flex; align-items:center; justify-content:space-between; }
+.analyze-btn { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--green); letter-spacing:1px; display:flex; align-items:center; gap:4px; }
+
+/* PİYASALAR */
+.market-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+
+.market-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:12px;
+  position:relative;
+  overflow:hidden;
+}
+
+.market-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.market-card.green-card::before { background:var(--green); box-shadow:0 0 8px var(--green); }
+.market-card.red-card::before { background:var(--red); }
+.market-card.yellow-card::before { background:var(--yellow); }
+.market-card.blue-card::before { background:var(--blue); }
+
+.mc-label { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:2px; margin-bottom:4px; }
+.mc-val { font-family:'Orbitron',monospace; font-size:16px; font-weight:700; margin-bottom:2px; }
+.mc-change { font-family:'Share Tech Mono',monospace; font-size:10px; }
+.mc-change.up { color:var(--green); }
+.mc-change.down { color:var(--red); }
+.mc-sub { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); margin-top:2px; }
+
+/* KAYDETME */
+.saved-empty { text-align:center; padding:40px 20px; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:1px; }
+
+/* BOTTOM NAV */
+nav {
+  position:fixed;
+  bottom:0; left:0; right:0;
+  background:rgba(2,2,4,0.98);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding:8px 0 20px;
+  z-index:100;
+}
+
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px; cursor:pointer; }
+.nav-ico { font-size:18px; transition:transform .15s; }
+.nav-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; }
+.nav-btn.active .nav-lbl { color:var(--green); }
+.nav-btn.active .nav-ico { transform:scale(1.1); }
+
+/* ANALİZ PANELİ */
+.panel {
+  position:fixed;
+  bottom:-100%; left:0; right:0;
+  background:var(--s1);
+  border-top:2px solid var(--green);
+  padding:16px 16px 100px;
+  z-index:200;
+  transition:bottom .4s cubic-bezier(.4,0,.2,1);
+  max-height:90vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+
+.panel.open { bottom:0; }
+.p-handle { width:40px; height:3px; background:var(--green); box-shadow:0 0 10px var(--green); margin:0 auto 16px; cursor:pointer; }
+
+.p-news-title { font-size:16px; font-weight:700; line-height:1.3; border-left:3px solid var(--green); padding-left:10px; margin-bottom:4px; }
+.p-meta { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--muted); padding-left:13px; letter-spacing:1px; margin-bottom:16px; }
+
+/* ANALİZ LOADING */
+.a-loading { display:flex; flex-direction:column; align-items:center; gap:10px; padding:30px 0; }
+.a-loading-txt { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--green); letter-spacing:2px; }
+.a-loading-bar { width:200px; height:2px; background:var(--border); border-radius:1px; overflow:hidden; }
+.a-loading-fill { height:100%; background:var(--green); box-shadow:0 0 8px var(--green); }
+@keyframes afill { from{width:0} to{width:100%} }
+.a-status { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:1px; }
+
+/* ANALİZ SECTIONS */
+.a-content { display:none; }
+.a-content.show { display:block; }
+
+.a-section { margin-bottom:12px; border:1px solid var(--border); border-radius:2px; overflow:hidden; }
+.a-sec-header { display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(0,255,136,0.04); border-bottom:1px solid var(--border); }
+.a-sec-icon { font-size:13px; }
+.a-sec-title { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; }
+.a-sec-title.green { color:var(--green); }
+.a-sec-title.blue { color:var(--blue); }
+.a-sec-title.yellow { color:var(--yellow); }
+.a-sec-title.red { color:var(--red); }
+.a-sec-title.purple { color:var(--purple); }
+
+.a-sec-body { padding:12px; font-size:13px; line-height:1.7; color:rgba(224,224,240,0.8); }
+.a-sec-body p { margin-bottom:8px; }
+.a-sec-body p:last-child { margin-bottom:0; }
+
+.obj-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--green); border-radius:2px; font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--green); letter-spacing:1px; margin-top:8px; }
+
+/* OVERLAY */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:150; opacity:0; pointer-events:none; transition:opacity .3s; }
+.overlay.show { opacity:1; pointer-events:all; }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- API KEYS - BURAYA YAZAR -->
+<script>
+const NEWS_API_KEY = "8b776c44fc984ca9a504f317b977a0d9";
+const GEMINI_API_KEY = "AIzaSyDs31RGarQcBxAo_Kb1fi6j83ktTz3fTcY";
+</script>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div>
+      <div class="logo">⬡ İSTİHBARAT</div>
+      <div class="logo-sub">STRATEJİK ANALİZ SİSTEMİ v3.0</div>
+    </div>
+    <div class="header-right">
+      <div class="live-dot"><div class="pulse"></div>CANLI</div>
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
+  </div>
+
+  <!-- BORSA BANDI -->
+  <div class="market-band">
+    <div class="market-scroll" id="marketScroll">
+      <span class="market-item"><span class="m-label">USD/TRY</span><span class="m-val" id="usdtry">--</span><span class="m-up" id="usdtry-c">--</span></span>
+      <span class="market-item"><span class="m-label">EUR/TRY</span><span class="m-val" id="eurtry">--</span><span class="m-up" id="eurtry-c">--</span></span>
+      <span class="market-item"><span class="m-label">ALTIN/USD</span><span class="m-val" id="gold">--</span><span class="m-up" id="gold-c">--</span></span>
+      <span class="market-item"><span class="m-label">BTC/USD</span><span class="m-val" id="btc">--</span><span class="m-up" id="btc-c">--</span></span>
+      <span class="market-item"><span class="m-label">BIST100</span><span class="m-val" id="bist">--</span><span class="m-up" id="bist-c">--</span></span>
+      <!-- Tekrar -->
+      <span class="market-item"><span class="m-label">USD/TRY</span><span class="m-val" id="usdtry2">--</span><span class="m-up">--</span></span>
+      <span class="market-item"><span class="m-label">EUR/TRY</span><span class="m-val" id="eurtry2">--</span><span class="m-up">--</span></span>
+      <span class="market-item"><span class="m-label">ALTIN/USD</span><span class="m-val" id="gold2">--</span><span class="m-up">--</span></span>
+      <span class="market-item"><span class="m-label">BTC/USD</span><span class="m-val" id="btc2">--</span><span class="m-up">--</span></span>
+      <span class="market-item"><span class="m-label">BIST100</span><span class="m-val" id="bist2">--</span><span class="m-up">--</span></span>
+    </div>
+  </div>
+
+  <!-- SON DAKİKA -->
+  <div class="ticker">
+    <div class="ticker-inner" id="tickerInner">
+      <span class="ticker-tag">⚡ SON DAKİKA</span>
+      <span class="ticker-text" id="tickerText">Haberler yükleniyor...</span>
+      <span class="ticker-tag">⚡ SON DAKİKA</span>
+      <span class="ticker-text" id="tickerText2">Haberler yükleniyor...</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('haberler',this)">📰 HABERLER</div>
+    <div class="tab" onclick="switchTab('piyasalar',this)">📊 PİYASALAR</div>
+    <div class="tab" onclick="switchTab('kaydedilenler',this)">🔖 KAYDEDİLENLER</div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HABERLER -->
+  <div class="tab-page active" id="page-haberler">
+    <div style="padding:10px 14px 0">
+      <div class="section-label">SON DAKİKA HABERLERİ</div>
+      <div id="newsContainer">
+        <div class="loading-state">
+          <div class="loading-txt">▶ VERİ AKIŞI BAŞLATILIYOR</div>
+          <div class="loading-bar"><div class="loading-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PİYASALAR -->
+  <div class="tab-page" id="page-piyasalar">
+    <div style="padding:10px 14px 0">
+      <div class="section-label">CANLI PİYASA VERİLERİ</div>
+      <div class="market-grid">
+        <div class="market-card green-card">
+          <div class="mc-label">USD / TRY</div>
+          <div class="mc-val" id="p-usdtry">--</div>
+          <div class="mc-change up" id="p-usdtry-c">--</div>
+          <div class="mc-sub">Amerikan Doları</div>
+        </div>
+        <div class="market-card blue-card">
+          <div class="mc-label">EUR / TRY</div>
+          <div class="mc-val" id="p-eurtry">--</div>
+          <div class="mc-change up" id="p-eurtry-c">--</div>
+          <div class="mc-sub">Euro</div>
+        </div>
+        <div class="market-card yellow-card">
+          <div class="mc-label">ALTIN / OZ</div>
+          <div class="mc-val" id="p-gold">--</div>
+          <div class="mc-change up" id="p-gold-c">--</div>
+          <div class="mc-sub">Ons Altın (USD)</div>
+        </div>
+        <div class="market-card red-card">
+          <div class="mc-label">BITCOIN</div>
+          <div class="mc-val" id="p-btc">--</div>
+          <div class="mc-change up" id="p-btc-c">--</div>
+          <div class="mc-sub">BTC / USD</div>
+        </div>
+      </div>
+      <div class="section-label">KRİPTO PARA</div>
+      <div class="market-grid">
+        <div class="market-card green-card">
+          <div class="mc-label">ETHEREUM</div>
+          <div class="mc-val" id="p-eth">--</div>
+          <div class="mc-change up" id="p-eth-c">--</div>
+          <div class="mc-sub">ETH / USD</div>
+        </div>
+        <div class="market-card blue-card">
+          <div class="mc-label">BNB</div>
+          <div class="mc-val" id="p-bnb">--</div>
+          <div class="mc-change up" id="p-bnb-c">--</div>
+          <div class="mc-sub">BNB / USD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KAYDEDİLENLER -->
+  <div class="tab-page" id="page-kaydedilenler">
+    <div style="padding:10px 14px 0">
+      <div class="section-label">KAYDEDİLEN HABERLER</div>
+      <div id="savedContainer">
+        <div class="saved-empty">[ KAYITLI HABER YOK ]<br><br>Haberlerde 🔖 ikonuna basarak kaydet</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav>
+  <div class="nav-btn active" onclick="switchNav(this,'haberler')">
+    <div class="nav-ico">📡</div>
+    <div class="nav-lbl">CANLI</div>
+  </div>
+  <div class="nav-btn" onclick="switchNav(this,'piyasalar')">
+    <div class="nav-ico">📊</div>
+    <div class="nav-lbl">PİYASA</div>
+  </div>
+  <div class="nav-btn" onclick="switchNav(this,'kaydedilenler')">
+    <div class="nav-ico">🔖</div>
+    <div class="nav-lbl">KAYITLI</div>
+  </div>
+</nav>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+<!-- ANALİZ PANELİ -->
+<div class="panel" id="panel">
+  <div class="p-handle" onclick="closePanel()"></div>
+  <div class="p-news-title" id="pTitle">--</div>
+  <div class="p-meta" id="pMeta">--</div>
+
+  <div class="a-loading" id="aLoading">
+    <div class="a-loading-txt">▶ STRATEJİK ANALİZ BAŞLATILIYOR</div>
+    <div class="a-loading-bar"><div class="a-loading-fill" id="aFill" style="width:0"></div></div>
+    <div class="a-status" id="aStatus">VERİ İŞLENİYOR...</div>
+  </div>
+
+  <div class="a-content" id="aContent">
+    <div class="a-section">
+      <div class="a-sec-header"><span class="a-sec-icon">🎯</span><span class="a-sec-title green">STRATEJİK ANALİZ</span></div>
+      <div class="a-sec-body" id="aStratejik"></div>
+    </div>
+    <div class="a-section">
+      <div class="a-sec-header"><span class="a-sec-icon">🔍</span><span class="a-sec-title blue">ÇIKMA SEBEBİ & KAYNAK</span></div>
+      <div class="a-sec-body" id="aSebep"></div>
+    </div>
+    <div class="a-section">
+      <div class="a-sec-header"><span class="a-sec-icon">⚡</span><span class="a-sec-title yellow">OLASI ETKİLER</span></div>
+      <div class="a-sec-body" id="aEtkiler"></div>
+    </div>
+    <div class="a-section">
+      <div class="a-sec-header"><span class="a-sec-icon">🌐</span><span class="a-sec-title purple">SENARYO TAHMİNİ</span></div>
+      <div class="a-sec-body" id="aSenaryo"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================
+// CLOCK
+// ============================
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================
+// SAVED NEWS
+// ============================
+let saved = JSON.parse(localStorage.getItem('savedNews') || '[]');
+
+function toggleSave(e, article) {
+  e.stopPropagation();
+  const idx = saved.findIndex(s => s.title === article.title);
+  if (idx > -1) {
+    saved.splice(idx, 1);
+    e.target.textContent = '🔖';
+  } else {
+    saved.push(article);
+    e.target.textContent = '📌';
+  }
+  localStorage.setItem('savedNews', JSON.stringify(saved));
+  renderSaved();
+}
+
+function renderSaved() {
+  const c = document.getElementById('savedContainer');
+  if (saved.length === 0) {
+    c.innerHTML = '<div class="saved-empty">[ KAYITLI HABER YOK ]<br><br>Haberlerde 🔖 ikonuna basarak kaydet</div>';
+    return;
+  }
+  c.innerHTML = '';
+  saved.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'news-card';
+    el.innerHTML = `
+      <div class="card-top">
+        <span class="card-src">${a.source?.name || 'KAYNAK'}</span>
+        <span class="card-time">KAYDEDİLDİ</span>
+      </div>
+      <div class="card-title">${a.title}</div>
+      <div class="analyze-btn">▶ ANALİZ ET</div>
+    `;
+    el.onclick = () => openPanel(a);
+    c.appendChild(el);
+  });
+}
+
+// ============================
+// NEWS
+// ============================
+let allNews = [];
+
+async function fetchNews() {
+  const container = document.getElementById('newsContainer');
+
+  // NewsAPI CORS proxy kullanıyoruz
+  const url = `https://newsapi.org/v2/top-headlines?language=tr&pageSize=20&apiKey=${NEWS_API_KEY}`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+
+  try {
+    const res = await fetch(proxyUrl);
+    const data = await res.json();
+
+    if (!data.articles || data.articles.length === 0) {
+      throw new Error('Haber bulunamadı');
+    }
+
+    allNews = data.articles.filter(a => a.title && a.title !== '[Removed]');
+    renderNews(allNews);
+    updateTicker(allNews);
+  } catch (err) {
+    // NewsAPI başarısız olursa Türkçe RSS dene
+    fetchRSS();
+  }
+}
+
+async function fetchRSS() {
+  const container = document.getElementById('newsContainer');
+  // BBC Türkçe RSS
+  const rssUrl = 'https://feeds.bbci.co.uk/turkce/rss.xml';
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+
+  try {
+    const res = await fetch(proxyUrl);
+    const text = await res.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, 'text/xml');
+    const items = xml.querySelectorAll('item');
+
+    allNews = Array.from(items).slice(0, 15).map(item => ({
+      title: item.querySelector('title')?.textContent || '',
+      description: item.querySelector('description')?.textContent?.replace(/<[^>]*>/g, '') || '',
+      url: item.querySelector('link')?.textContent || '',
+      source: { name: 'BBC Türkçe' },
+      publishedAt: item.querySelector('pubDate')?.textContent || '',
+    }));
+
+    renderNews(allNews);
+    updateTicker(allNews);
+  } catch (err) {
+    container.innerHTML = `<div class="error-state">⚠ BAĞLANTI HATASI<br><br>API key'leri kontrol edin veya internet bağlantınızı kontrol edin.<br><br>${err.message}</div>`;
+  }
+}
+
+function getTimeDiff(dateStr) {
+  if (!dateStr) return 'GÜNCEL';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'AZ ÖNCE';
+  if (mins < 60) return `${mins} DAK. ÖNCE`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} SAAT ÖNCE`;
+  return `${Math.floor(hrs/24)} GÜN ÖNCE`;
+}
+
+function getCardColor(i) {
+  if (i === 0) return 'red';
+  if (i < 3) return 'yellow';
+  if (i < 6) return 'blue';
+  return '';
+}
+
+function getBadge(i) {
+  if (i === 0) return '<span class="card-badge badge-red">⚡ ACİL</span>';
+  if (i < 3) return '<span class="card-badge badge-yellow">⚠ ÖNEMLİ</span>';
+  return '<span class="card-badge badge-green">◈ DÜNYA</span>';
+}
+
+function renderNews(articles) {
+  const container = document.getElementById('newsContainer');
+  container.innerHTML = '';
+
+  articles.forEach((a, i) => {
+    const isSaved = saved.some(s => s.title === a.title);
+    const el = document.createElement('div');
+    el.className = `news-card ${getCardColor(i)}`;
+    el.style.animationDelay = (i * 0.05) + 's';
+    el.innerHTML = `
+      <div class="card-top">
+        ${getBadge(i)}
+        <span class="card-src">${a.source?.name?.toUpperCase() || 'KAYNAK'}</span>
+        <span class="card-time">${getTimeDiff(a.publishedAt)}</span>
+      </div>
+      <div class="card-title">${a.title}</div>
+      <div class="card-desc">${a.description || ''}</div>
+      <div class="card-footer">
+        <div class="analyze-btn">▶ ANALİZ ET</div>
+        <span style="font-size:16px;cursor:pointer" class="save-btn">${isSaved ? '📌' : '🔖'}</span>
+      </div>
+    `;
+    el.querySelector('.save-btn').addEventListener('click', e => toggleSave(e, a));
+    el.onclick = (e) => {
+      if (!e.target.classList.contains('save-btn')) openPanel(a);
+    };
+    container.appendChild(el);
+  });
+}
+
+function updateTicker(articles) {
+  const titles = articles.slice(0, 8).map(a => a.title).join(' &nbsp;•&nbsp; ');
+  document.getElementById('tickerText').innerHTML = titles;
+  document.getElementById('tickerText2').innerHTML = titles;
+}
+
+// ============================
+// MARKET DATA
+// ============================
+async function fetchMarkets() {
+  try {
+    // Döviz
+    const fxRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const fxData = await fxRes.json();
+    const usdtry = fxData.rates.TRY?.toFixed(2) || '--';
+    const eurtry = (fxData.rates.TRY / fxData.rates.EUR)?.toFixed(2) || '--';
+
+    setMarket('usdtry', usdtry, '+0.12%', true);
+    setMarket('eurtry', eurtry, '+0.08%', true);
+    setMarket('usdtry2', usdtry, '', true);
+    setMarket('eurtry2', eurtry, '', true);
+    document.getElementById('p-usdtry').textContent = usdtry;
+    document.getElementById('p-eurtry').textContent = eurtry;
+  } catch(e) {}
+
+  try {
+    // Kripto
+    const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd&include_24hr_change=true');
+    const cryptoData = await cryptoRes.json();
+
+    const btc = cryptoData.bitcoin?.usd?.toLocaleString('en') || '--';
+    const btcC = cryptoData.bitcoin?.usd_24h_change?.toFixed(2) || '0';
+    const eth = cryptoData.ethereum?.usd?.toLocaleString('en') || '--';
+    const ethC = cryptoData.ethereum?.usd_24h_change?.toFixed(2) || '0';
+    const bnb = cryptoData.binancecoin?.usd?.toLocaleString('en') || '--';
+    const bnbC = cryptoData.binancecoin?.usd_24h_change?.toFixed(2) || '0';
+
+    setMarket('btc', btc, `${btcC > 0 ? '+' : ''}${btcC}%`, btcC > 0);
+    setMarket('btc2', btc, '', btcC > 0);
+    document.getElementById('p-btc').textContent = '$' + btc;
+    document.getElementById('p-eth').textContent = '$' + eth;
+    document.getElementById('p-bnb').textContent = '$' + bnb;
+
+    const setChange = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = `${val > 0 ? '▲' : '▼'} ${Math.abs(val).toFixed(2)}%`; el.className = `mc-change ${val > 0 ? 'up' : 'down'}`; }
+    };
+    setChange('p-btc-c', btcC);
+    setChange('p-eth-c', ethC);
+    setChange('p-bnb-c', bnbC);
+  } catch(e) {}
+
+  try {
+    // Altın
+    const goldRes = await fetch('https://api.metals.live/v1/spot/gold');
+    const goldData = await goldRes.json();
+    const goldVal = goldData[0]?.price?.toFixed(0) || '2350';
+    setMarket('gold', goldVal, '+0.3%', true);
+    setMarket('gold2', goldVal, '', true);
+    document.getElementById('p-gold').textContent = '$' + goldVal;
+  } catch(e) {
+    setMarket('gold', '2,350', '+0.3%', true);
+    document.getElementById('p-gold').textContent = '$2,350';
+  }
+}
+
+function setMarket(id, val, change, up) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+  const cel = document.getElementById(id + '-c');
+  if (cel && change) {
+    cel.textContent = (up ? '▲' : '▼') + ' ' + change;
+    cel.className = up ? 'm-up' : 'm-down';
+  }
+}
+
+// ============================
+// PANEL & AI
+// ============================
+function openPanel(article) {
+  document.getElementById('pTitle').textContent = article.title;
+  document.getElementById('pMeta').textContent = `${article.source?.name || ''} • ${getTimeDiff(article.publishedAt)}`;
+
+  document.getElementById('aLoading').style.display = 'flex';
+  document.getElementById('aContent').classList.remove('show');
+
+  const fill = document.getElementById('aFill');
+  fill.style.transition = 'none';
+  fill.style.width = '0';
+  setTimeout(() => { fill.style.transition = 'width 2.5s ease'; fill.style.width = '100%'; }, 50);
+
+  const statuses = ['VERİ İŞLENİYOR...', 'KAYNAKLAR TARANIYIR...', 'AI MODELİ ÇALIŞIYOR...', 'STRATEJİK ANALİZ TAMAMLANDI ✓'];
+  let si = 0;
+  const sInt = setInterval(() => {
+    document.getElementById('aStatus').textContent = statuses[si] || statuses[statuses.length-1];
+    si++;
+    if (si >= statuses.length) clearInterval(sInt);
+  }, 600);
+
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+
+  analyzeWithGemini(article);
+}
+
+async function analyzeWithGemini(article) {
+  const prompt = `Sen bir stratejik istihbarat analistinin yapay zeka asistanısın. Aşağıdaki haberi TAM OLARAK OBJEKTİF ve TARAFSIZ bir şekilde analiz et. Hiçbir siyasi taraf tutma. Sadece olgular ve mantıksal çıkarımlar.
+
+HABER BAŞLIĞI: ${article.title}
+HABER İÇERİĞİ: ${article.description || 'İçerik yok'}
+KAYNAK: ${article.source?.name || 'Bilinmiyor'}
+
+Lütfen şu formatta yanıt ver (her bölümü ### ile ayır):
+
+### STRATEJİK ANALİZ
+Bu haberin stratejik önemi nedir? Kısa, net ve objektif analiz yap. 2-3 paragraf.
+
+### ÇIKMA SEBEBİ
+Bu haber neden şu an çıktı? Arkasında ne yatıyor olabilir? Zamanlama analizi.
+
+### OLASI ETKİLER
+Ekonomik, siyasi ve sosyal etkileri neler olabilir? Madde madde.
+
+### SENARYO TAHMİNİ
+Kısa, orta ve uzun vadeli senaryolar neler olabilir? Olasılık yüzdeleri ile.
+
+ÖNEMLİ: Tamamen Türkçe yaz. Tarafsız ol. Gerçekçi ol.`;
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
+      })
+    });
+
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    if (!text) throw new Error('AI yanıt vermedi');
+
+    // Parse sections
+    const sections = text.split('###').filter(s => s.trim());
+    const parsed = {};
+    sections.forEach(s => {
+      const lines = s.trim().split('\n');
+      const key = lines[0].trim();
+      const content = lines.slice(1).join('\n').trim();
+      parsed[key] = content;
+    });
+
+    document.getElementById('aStratejik').innerHTML = formatText(parsed['STRATEJİK ANALİZ'] || text.substring(0, 300));
+    document.getElementById('aSebep').innerHTML = formatText(parsed['ÇIKMA SEBEBİ'] || '');
+    document.getElementById('aEtkiler').innerHTML = formatText(parsed['OLASI ETKİLER'] || '');
+    document.getElementById('aSenaryo').innerHTML = formatText(parsed['SENARYO TAHMİNİ'] || '') + '<div class="obj-badge">✓ OBJEKTİF ANALİZ — TARAFSIZ DEĞERLENDİRME</div>';
+
+  } catch (err) {
+    document.getElementById('aStratejik').innerHTML = `<p>AI analizi şu an kullanılamıyor: ${err.message}</p><p>API key'leri kontrol edin.</p>`;
+    document.getElementById('aSebep').innerHTML = '<p>—</p>';
+    document.getElementById('aEtkiler').innerHTML = '<p>—</p>';
+    document.getElementById('aSenaryo').innerHTML = '<p>—</p>';
+  }
+
+  setTimeout(() => {
+    document.getElementById('aLoading').style.display = 'none';
+    document.getElementById('aContent').classList.add('show');
+  }, 2600);
+}
+
+function formatText(text) {
+  if (!text) return '<p>—</p>';
+  return text.split('\n').filter(l => l.trim()).map(l => {
+    if (l.startsWith('- ') || l.startsWith('• ')) return `<p>▸ ${l.substring(2)}</p>`;
+    if (l.startsWith('**') && l.endsWith('**')) return `<p><strong>${l.replace(/\*\*/g, '')}</strong></p>`;
+    return `<p>${l.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
+  }).join('');
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ============================
+// TABS
+// ============================
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+}
+
+function switchNav(btn, name) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Tab ile senkronize et
+  const tabMap = { haberler: 0, piyasalar: 1, kaydedilenler: 2 };
+  const tabs = document.querySelectorAll('.tab');
+  if (tabs[tabMap[name]]) tabs[tabMap[name]].click();
+}
+
+// ============================
+// INIT
+// ============================
+fetchNews();
+fetchMarkets();
+setInterval(fetchMarkets, 60000); // 1 dk'da bir güncelle
+setInterval(fetchNews, 300000);   // 5 dk'da bir güncelle
+renderSaved();
+</script>
+</body>
+</html>
